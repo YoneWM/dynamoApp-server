@@ -1,0 +1,30 @@
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `age` int NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `peso` decimal(5,2) NOT NULL,
+  `genero` enum('m','f') NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+);
+
+CREATE TABLE `results` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `pinchMax` decimal(5,2) NOT NULL,
+  `palmMax` decimal(5,2) NOT NULL,
+  `examDate` date NOT NULL DEFAULT (curdate()),
+  PRIMARY KEY (`id`),
+  KEY `fk_users_results` (`userId`),
+  CONSTRAINT `fk_users_results` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+);
+
+SELECT u.name,u.username,u.age,u.email,u.password,u.peso,u.genero,r.pinchMax,r.palmMax,r.examDate 
+FROM users u inner join results r on u.id = r.userId;
+
+INSERT INTO users VALUES(NULL,'test1','tst1Nick',22,'mm@test.com','123',70.20,'m');
+INSERT INTO results VALUES(NULL,1,10.11,55.00,'2025-04-25');
