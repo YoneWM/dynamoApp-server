@@ -1,7 +1,9 @@
 package engComp.dynamometerApp_server.entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "users")
@@ -10,26 +12,35 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false,length = 90)
     private String name;
 
-    @Column(name = "username")
+    @Column(name = "username",nullable = false,length = 15,unique = true)
     private String userName;
 
-    @Column(name = "age")
-    private int age;
-
-    @Column(name = "email")
+    @Column(name = "email",nullable = false,unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password",nullable = false,length = 12)
     private String password;
 
-    @Column(name = "peso")
+    @Column(name = "dataNascimento",nullable = false)
+    private LocalDate dataNascimento;
+
+    @Column(name = "peso",nullable = false)
     private double peso;
 
-    @Column(name = "genero")
+    @Column(name = "genero",nullable = false)
     private String genero;
+
+    @Column(name = "altura",nullable = false)
+    private int altura;
+
+    @Column(name = "inativo")
+    private String inativo;
+
+    @Column(name = "dataExclusao")
+    private LocalDateTime dataExclusao;
 
     public Integer getId() {
         return id;
@@ -51,12 +62,12 @@ public class User {
         this.userName = userName;
     }
 
-    public int getAge() {
-        return age;
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     public String getEmail() {
@@ -83,11 +94,31 @@ public class User {
         this.peso = peso;
     }
 
+    public int getAltura() {
+        return altura;
+    }
+
+    public void setAltura(int altura) {
+        this.altura = altura;
+    }
+
     public String getGenero() {
         return genero;
     }
 
     public void setGenero(String genero) {
         this.genero = genero;
+    }
+
+    public LocalDateTime getDataExclusao() { return dataExclusao; }
+
+    public void setDataExclusao(LocalDateTime dataExclusao) {
+        this.dataExclusao = dataExclusao;
+    }
+
+    public String getInativo() { return inativo; }
+
+    public void setInativo(String inativo) {
+        this.inativo = inativo;
     }
 }

@@ -2,9 +2,12 @@ package engComp.dynamometerApp_server.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import engComp.dynamometerApp_server.dto.UserCreateDTO;
+import engComp.dynamometerApp_server.dto.UserResponseDTO;
 import engComp.dynamometerApp_server.entities.User;
 import engComp.dynamometerApp_server.repositories.UserRepository;
 
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -19,29 +22,59 @@ public class UserService {
     private UserRepository userRepository;
 
     //GET request methods
-    public Optional<User> getUserById(int userId){
+    public Optional<UserResponseDTO> getUserById(int userId) {
         logger.info("Getting the user by Id: " + userId);
 
-        return userRepository.findById(userId);
+        //se usuário encontrado -> ele é retornado como uma instancia do DTO correspondente no Optional
+        return userRepository.findById(userId)
+                .map(UserResponseDTO::new);
     }
 
-    public Optional<User> getUserByEmail(String email){
-        logger.info("Getting the user by email: "+email);
+    public Optional<UserResponseDTO> getUserByEmail(String email) {
+        logger.info("Getting the user by email: " + email);
+        return userRepository.findByEmail(email)
+                .map(UserResponseDTO::new);
+    }
 
+    public Optional<User> getUserEntityByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     //POST request methods
-    public User createUser(String name, String username,int age, String email, String password,double peso, String genero){
+    public UserResponseDTO createUser(UserCreateDTO dto) {
         User user = new User();
-        user.setName(name);
-        user.setUserName(username);
-        user.setAge(age);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setPeso(peso);
-        user.setGenero(genero);
+        user.setName(dto.getName());
+        user.setUserName(dto.getUsername());
+        user.setDataNascimento(dto.getDataNascimento());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setAltura(dto.getAltura());
+        user.setPeso(dto.getPeso());
+        user.setGenero(dto.getGenero());
+        user.setInativo(null);
+        user.setDataExclusao(null);
 
-        return userRepository.save(user);
+        return new UserResponseDTO(userRepository.save(user));
+    }
+
+    //PUT request methods
+    public Optional<UserResponseDTO> toggleInativo(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+
+        if (user.getInativo() == null) {
+            user.setInativo("s");
+            user.setDataExclusao(LocalDateTime.now());
+        } else {
+            user.setInativo(null);
+            user.setDataExclusao(null);
+        }
+
+        return Optional.of(new UserResponseDTO(userRepository.save(user)));
     }
 }

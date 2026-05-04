@@ -1,5 +1,8 @@
 package engComp.dynamometerApp_server.controllers;
 
+import engComp.dynamometerApp_server.dto.UserCreateDTO;
+import engComp.dynamometerApp_server.dto.UserResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,12 @@ import engComp.dynamometerApp_server.services.UserService;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+/*
+-Métodos de Update de (password,email,altura,peso)
+-Recuperação por email disparado pelo recebimento de email ou usuário
+
+ */
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -19,50 +28,50 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email){
-        logger.info("Getting user by email: "+ email);
-        Optional<User> userOptional = userService.getUserByEmail(email);
+    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam String email) {
+        logger.info("Getting user by email: " + email);
+        Optional<UserResponseDTO> userOptional = userService.getUserByEmail(email);
 
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else{
-            return ResponseEntity.status(HttpStatus.OK).body(userOptional.get());
         }
+        return ResponseEntity.ok(userOptional.get()); //lembrete: aqui é retornado o UserResponseDTO (sem senha, status inativo ou exclusão)
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestParam String email, @RequestParam String password){
+    public ResponseEntity<Void> loginUser(@RequestParam String email, @RequestParam String password) {
         logger.info("User login");
 
-        //user with said email exists?
-        Optional<User> userOptional = userService.getUserByEmail(email);
+        Optional<User> userOptional = userService.getUserEntityByEmail(email);
 
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        //password check
-        if(!password.equals(userOptional.get().getPassword())){
+        if (!password.equals(userOptional.get().getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserCreateDTO dto) {
         logger.info("Creating New User");
+        UserResponseDTO newUser = userService.createUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
 
-        User newUser = userService.createUser(
-                user.getName(),
-                user.getUserName(),
-                user.getAge(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getPeso(),
-                user.getGenero()
-        );
+    @PutMapping("/deactivateAcc")
+    public ResponseEntity<UserResponseDTO> toggleInativo(@RequestParam String email) {
+        logger.info("Toggling inativo for user: " + email);
 
-        return ResponseEntity.status(HttpStatus.OK).body(newUser);
+        Optional<UserResponseDTO> userOptional = userService.toggleInativo(email);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userOptional.get());
     }
 }

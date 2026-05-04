@@ -1,7 +1,11 @@
 package engComp.dynamometerApp_server.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/*
+pinchMax e palmMax não são obrigatórios, PORÉM AO MENOS 1 DEVE SER INSERIDA
+*/
 
 @Entity
 @Table(name = "results")
@@ -11,17 +15,17 @@ public class Result {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 
     @Column(name = "pinchMax")
-    private Double pinchMax;
+    private double pinchMax;
 
     @Column(name = "palmMax")
-    private Double palmMax;
+    private double palmMax;
 
-    @Column(name = "examDate")
-    private LocalDate examDate;
+    @Column(name = "examDate",nullable = false,updatable = false)
+    private LocalDateTime examDate;
 
     public Integer getId() {
         return id;
@@ -51,11 +55,11 @@ public class Result {
         this.palmMax = palmMax;
     }
 
-    public LocalDate getExamDate() {
+    public LocalDateTime getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(LocalDate examDate) {
+    public void setExamDate(LocalDateTime examDate) {
         this.examDate = examDate;
     }
 }
