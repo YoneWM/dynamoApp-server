@@ -1,6 +1,9 @@
 package engComp.dynamometerApp_server.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
 /*
@@ -12,23 +15,23 @@ pinchMax e palmMax não são obrigatórios, PORÉM AO MENOS 1 DEVE SER INSERIDA
 public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int userId;
 
     @ManyToOne
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
     @Column(name = "pinchMax")
-    private double pinchMax;
+    private Double pinchMax;
 
     @Column(name = "palmMax")
-    private double palmMax;
+    private Double palmMax;
 
     @Column(name = "examDate",nullable = false,updatable = false)
     private LocalDateTime examDate;
 
-    public Integer getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
     public User getUser() {
