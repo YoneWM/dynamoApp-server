@@ -15,7 +15,7 @@ pinchMax e palmMax não são obrigatórios, PORÉM AO MENOS 1 DEVE SER INSERIDA
 public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "userId",nullable = false)
@@ -30,8 +30,8 @@ public class Result {
     @Column(name = "examDate",nullable = false,updatable = false)
     private LocalDateTime examDate;
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
     public User getUser() {
