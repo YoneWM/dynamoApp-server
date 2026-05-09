@@ -1,10 +1,13 @@
 package engComp.dynamometerApp_server.controllers;
 
+import engComp.dynamometerApp_server.dto.MonthlyStatsResponseDTO;
 import engComp.dynamometerApp_server.dto.ResultCreateDTO;
 import engComp.dynamometerApp_server.dto.ResultResponseDTO;
+import engComp.dynamometerApp_server.dto.WeeklyStatsResponseDTO;
 import engComp.dynamometerApp_server.services.ResultService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,8 @@ import java.util.logging.Logger;
 * - Retornar os X últimos resultados (palMax,pinchMax,examDate) de um usuário Y (FEITO -> TESTAR)
 * - Retornar os resultados (palMax,pinchMax,examDate) de um usuário Y de uma data d1 até d2 (FEITO -> TESTAR)
 * - Retornar todos os resultados (palMax,pinchMax,examDate) (FEITO -> TESTAR)
-* - Retornar Count, Média, Máx de exames realizados na semana, para ambos pinchMax e palmMax
-* - Retornar Média por semana de ambos resultados
+* - Retornar Count, Média, Máx de exames realizados na semana, para ambos pinchMax e palmMax (FEITO -> TESTAR)
+* - Retornar Média por semana de ambos resultados (mesma coisa que o anterior?)
 * */
 
 @RestController
@@ -29,7 +32,7 @@ public class ResultController {
     @Autowired
     private ResultService resultService;
 
-    //métodos GET
+    //Métodos GET
     @GetMapping("/all")
     public ResponseEntity<List<ResultResponseDTO>> getAllResults(@RequestParam String email) {
         logger.info("Getting all results for user: " + email);
@@ -51,8 +54,8 @@ public class ResultController {
     @GetMapping("/getDateRange")
     public ResponseEntity<List<ResultResponseDTO>> getResultsByDateRange(
             @RequestParam String email,
-            @RequestParam LocalDateTime d1,
-            @RequestParam LocalDateTime d2) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime d1,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime d2) {
         logger.info("Getting results for user: " + email + " between " + d1 + " and " + d2);
 
         List<ResultResponseDTO> results = resultService.getResultsByDateRange(email, d1, d2);
@@ -60,6 +63,28 @@ public class ResultController {
         return ResponseEntity.status(HttpStatus.OK).body(results);
     }
 
+    @GetMapping("/weeklyStats")
+    public ResponseEntity<List<WeeklyStatsResponseDTO>> getWeeklyStats(@RequestParam String email,
+                                                                       @RequestParam int semanas)
+    {
+        logger.info("Getting last " + semanas + " weeks stats for user: " + email);
+
+        List<WeeklyStatsResponseDTO> stats = resultService.getWeeklyStats(email, semanas);
+
+        return ResponseEntity.status(HttpStatus.OK).body(stats);
+    }
+
+    @GetMapping("/monthlyStats")
+    public ResponseEntity<List<MonthlyStatsResponseDTO>> getMonthlyStats(
+            @RequestParam String email,
+            @RequestParam int meses) {
+
+        logger.info("Getting last " + meses + " months stats for user: " + email);
+        List<MonthlyStatsResponseDTO> stats = resultService.getMonthlyStats(email, meses);
+        return ResponseEntity.ok(stats);
+    }
+
+    //Métodos POST
     @PostMapping("/create")
     public ResponseEntity<ResultResponseDTO> createResult(@RequestBody @Valid ResultCreateDTO dto) {
         logger.info("Creating new result for user: " + dto.getEmail());

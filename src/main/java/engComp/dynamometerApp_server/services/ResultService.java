@@ -1,7 +1,6 @@
 package engComp.dynamometerApp_server.services;
 
-import engComp.dynamometerApp_server.dto.ResultCreateDTO;
-import engComp.dynamometerApp_server.dto.ResultResponseDTO;
+import engComp.dynamometerApp_server.dto.*;
 import engComp.dynamometerApp_server.entities.Result;
 import engComp.dynamometerApp_server.entities.User;
 import engComp.dynamometerApp_server.repositories.ResultRepository;
@@ -9,7 +8,11 @@ import engComp.dynamometerApp_server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -58,6 +61,60 @@ public class ResultService {
                 .toList();
     }
 
+    public List<WeeklyStatsResponseDTO> getWeeklyStats(String email, int semanas) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado com email: " + email);
+        }
+
+        List<WeeklyStatsResponseDTO> resultado = new ArrayList<>();
+
+        //Gera uma lista com as estatisticas das ultimas X semanas (x = ao param "semanas")
+        for (int i = 0; i < semanas; i++) {
+            LocalDate weekStart = LocalDate.now()
+                    .minusWeeks(i)
+                    .with(DayOfWeek.MONDAY);
+
+            LocalDate weekEnd = weekStart.with(DayOfWeek.SUNDAY);
+
+            WeeklyStatsProjection projection = resultRepository.findWeeklyStats(
+                    email,
+                    weekStart.atStartOfDay(),
+                    weekEnd.atTime(23, 59, 59)
+            );
+
+            if(projection.getCount()>0){
+                resultado.add(new WeeklyStatsResponseDTO(projection, weekStart, weekEnd));
+            }
+        }
+
+        return resultado;
+    }
+
+    public List<MonthlyStatsResponseDTO> getMonthlyStats(String email, int meses) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado com email: " + email);
+        }
+
+        List<MonthlyStatsResponseDTO> resultado = new ArrayList<>();
+
+        for (int i = 0; i < meses; i++) {
+            YearMonth yearMonth = YearMonth.now().minusMonths(i);
+
+            LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
+            LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+
+            WeeklyStatsProjection projection = resultRepository.findMonthlyStats(
+                    email,
+                    startOfMonth,
+                    endOfMonth
+            );
+
+            //Só retorna as stats do mes se count > 0
+            if (projection.getCount()>0 ){resultado.add(new MonthlyStatsResponseDTO(projection, yearMonth));}
+        }
+
+        return resultado;
+    }
     //POST
     public ResultResponseDTO createResult(ResultCreateDTO dto) {
         // busca o usuário pelo email

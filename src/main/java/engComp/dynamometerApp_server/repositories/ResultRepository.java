@@ -1,5 +1,6 @@
 package engComp.dynamometerApp_server.repositories;
 
+import engComp.dynamometerApp_server.dto.WeeklyStatsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import engComp.dynamometerApp_server.entities.Result;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,30 @@ public interface ResultRepository extends JpaRepository<Result,Integer> {
             @Param("d2") LocalDateTime d2);
 
     List<Result> findByUserEmailOrderByExamDateDesc(String email);
+
+    @Query("SELECT " +
+            "COUNT(r) as count, " +
+            "AVG(r.pinchMax) as avgPinch, MAX(r.pinchMax) as maxPinch, " +
+            "AVG(r.palmMax) as avgPalm, MAX(r.palmMax) as maxPalm " +
+            "FROM Result r " +
+            "WHERE r.user.email = :email " +
+            "AND r.examDate >= :startOfWeek AND r.examDate <= :endOfWeek")
+    WeeklyStatsProjection findWeeklyStats(
+            @Param("email") String email,
+            @Param("startOfWeek") LocalDateTime startOfWeek,
+            @Param("endOfWeek") LocalDateTime endOfWeek
+    );
+
+    @Query("SELECT " +
+            "COUNT(r) as count, " +
+            "AVG(r.pinchMax) as avgPinch, MAX(r.pinchMax) as maxPinch, " +
+            "AVG(r.palmMax) as avgPalm, MAX(r.palmMax) as maxPalm " +
+            "FROM Result r " +
+            "WHERE r.user.email = :email " +
+            "AND r.examDate >= :startOfMonth AND r.examDate <= :endOfMonth")
+    WeeklyStatsProjection findMonthlyStats(
+            @Param("email") String email,
+            @Param("startOfMonth") LocalDateTime startOfMonth,
+            @Param("endOfMonth") LocalDateTime endOfMonth
+    );
 }
