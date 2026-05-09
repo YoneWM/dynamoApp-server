@@ -15,14 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
-/*
-*Funcionalidades:
-* - Retornar os X últimos resultados (palMax,pinchMax,examDate) de um usuário Y (FEITO -> TESTAR)
-* - Retornar os resultados (palMax,pinchMax,examDate) de um usuário Y de uma data d1 até d2 (FEITO -> TESTAR)
-* - Retornar todos os resultados (palMax,pinchMax,examDate) (FEITO -> TESTAR)
-* - Retornar Count, Média, Máx de exames realizados na semana, para ambos pinchMax e palmMax (FEITO -> TESTAR)
-* - Retornar Média por semana de ambos resultados (mesma coisa que o anterior?)
-* */
+
 
 @RestController
 @RequestMapping("/api/result")
@@ -92,5 +85,13 @@ public class ResultController {
         ResultResponseDTO newResult = resultService.createResult(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newResult);
+    }
+
+    //Métodos DELETE
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteResult(@RequestParam Integer id) {
+        logger.info("Deleting result: " + id);
+        resultService.deleteResult(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

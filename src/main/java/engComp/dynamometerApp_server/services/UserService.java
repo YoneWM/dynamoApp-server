@@ -1,5 +1,6 @@
 package engComp.dynamometerApp_server.services;
 
+import engComp.dynamometerApp_server.dto.UserUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import engComp.dynamometerApp_server.dto.UserCreateDTO;
@@ -32,6 +33,7 @@ public class UserService {
 
     public Optional<UserResponseDTO> getUserByEmail(String email) {
         logger.info("Getting the user by email: " + email);
+
         return userRepository.findByEmail(email)
                 .map(UserResponseDTO::new);
     }
@@ -57,7 +59,7 @@ public class UserService {
         return new UserResponseDTO(userRepository.save(user));
     }
 
-    //PUT request methods
+    //PATCH request methods
     public Optional<UserResponseDTO> toggleInativo(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
@@ -74,6 +76,27 @@ public class UserService {
             user.setInativo(null);
             user.setDataExclusao(null);
         }
+
+        return Optional.of(new UserResponseDTO(userRepository.save(user)));
+    }
+
+    public Optional<UserResponseDTO> updateUser(String email, UserUpdateDTO dto) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+
+        if (dto.getName() != null)           user.setName(dto.getName());
+        if (dto.getUsername() != null)       user.setUserName(dto.getUsername());
+        if (dto.getDataNascimento() != null) user.setDataNascimento(dto.getDataNascimento());
+        if (dto.getEmail() != null)          user.setEmail(dto.getEmail());
+        if (dto.getPassword() != null)       user.setPassword(dto.getPassword());
+        if (dto.getPeso() != null)           user.setPeso(dto.getPeso());
+        if (dto.getGenero() != null)         user.setGenero(dto.getGenero());
+        if (dto.getAltura() != null)         user.setAltura(dto.getAltura());
 
         return Optional.of(new UserResponseDTO(userRepository.save(user)));
     }

@@ -132,4 +132,12 @@ public class ResultService {
 
         return new ResultResponseDTO(resultRepository.save(result));
     }
+
+    //DELETE
+    public void deleteResult(Integer id) {
+        if (!resultRepository.existsById(id)) {
+            throw new RuntimeException("Resultado não encontrado com id: " + id);
+        }
+        resultRepository.deleteById(id);
+    }
 }

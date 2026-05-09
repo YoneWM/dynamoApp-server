@@ -2,6 +2,7 @@ package engComp.dynamometerApp_server.controllers;
 
 import engComp.dynamometerApp_server.dto.UserCreateDTO;
 import engComp.dynamometerApp_server.dto.UserResponseDTO;
+import engComp.dynamometerApp_server.dto.UserUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //Métodos GET
     @GetMapping
     public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam String email) {
         logger.info("Getting user by email: " + email);
@@ -38,6 +40,7 @@ public class UserController {
         return ResponseEntity.ok(userOptional.get()); //lembrete: aqui é retornado o UserResponseDTO (sem senha, status inativo ou exclusão)
     }
 
+    //Métodos POST
     @PostMapping("/login")
     public ResponseEntity<Void> loginUser(@RequestParam String email, @RequestParam String password) {
         logger.info("User login");
@@ -62,11 +65,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PutMapping("/deactivateAcc")
+    //Métodos PATCH
+    @PatchMapping("/deactivateAcc")
     public ResponseEntity<UserResponseDTO> toggleInativo(@RequestParam String email) {
         logger.info("Toggling inativo for user: " + email);
 
         Optional<UserResponseDTO> userOptional = userService.toggleInativo(email);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userOptional.get());
+    }
+
+    @PatchMapping("/updateUserInfo")
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestParam String email, @RequestBody @Valid UserUpdateDTO dto) {
+
+        logger.info("Updating user: " + email);
+
+        Optional<UserResponseDTO> userOptional = userService.updateUser(email, dto);
 
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
