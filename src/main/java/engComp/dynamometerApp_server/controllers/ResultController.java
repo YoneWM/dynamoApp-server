@@ -74,7 +74,7 @@ public class ResultController {
 
         logger.info("Getting last " + meses + " months stats for user: " + email);
         List<MonthlyStatsResponseDTO> stats = resultService.getMonthlyStats(email, meses);
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.status(HttpStatus.OK).body(stats);
     }
 
     //Métodos POST

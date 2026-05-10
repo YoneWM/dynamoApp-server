@@ -14,12 +14,6 @@ import engComp.dynamometerApp_server.services.UserService;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-/*
--Métodos de Update de (password,email,altura,peso)
--Recuperação por email disparado pelo recebimento de email ou usuário
-
- */
-
 @RestController
 @RequestMapping("/api/user")
 public class UserController {

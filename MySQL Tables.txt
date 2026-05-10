@@ -24,6 +24,13 @@ CREATE TABLE `results` (
     REFERENCES `users` (`id`)
 );
 
+CREATE TABLE password_reset_tokens (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    email       VARCHAR(255) NOT NULL,
+    code        VARCHAR(6)   NOT NULL,
+    expiresAt   DATETIME     NOT NULL
+);
+
 SELECT u.name,u.username,u.email,u.password,u.dataNascimento,u.peso,u.altura,u.genero,r.pinchMax,r.palmMax,r.examDate 
 FROM users u inner join results r on u.id = r.userId;
 
