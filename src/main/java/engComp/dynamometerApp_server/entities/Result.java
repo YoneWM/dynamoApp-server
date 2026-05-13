@@ -51,7 +51,7 @@ public class Result {
     @Column(name = "palmMaxE")
     private Double palmMaxE;
 
-    @Column(name = "examDate",nullable = false,updatable = false)
+    @Column(name = "examDate",updatable = false)
     private LocalDateTime examDate;
 
     public int getId() {

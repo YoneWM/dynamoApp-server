@@ -40,7 +40,7 @@ public class PasswordResetService {
         PasswordResetToken token = new PasswordResetToken();
         token.setEmail(email);
         token.setCode(code);
-        token.setExpiresAt(LocalDateTime.now().plusMinutes(25));
+        token.setExpiresAt(LocalDateTime.now().plusMinutes(1));
 
         tokenRepository.save(token);
         emailService.sendPasswordResetCode(email, code);

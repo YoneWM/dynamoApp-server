@@ -140,7 +140,7 @@ public class ResultService {
         result.setPalmMaxD(dto.getPalmMaxD());
         result.setPalmMaxE(dto.getPalmMaxE());
 
-        result.setExamDate(dto.getExamDate());
+        result.setExamDate(LocalDateTime.now());
 
         return new ResultResponseDTO(resultRepository.save(result));
     }
