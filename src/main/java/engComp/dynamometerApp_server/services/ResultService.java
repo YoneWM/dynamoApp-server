@@ -125,9 +125,21 @@ public class ResultService {
         }
 
         Result result = new Result();
+
         result.setUser(userOptional.get());
-        result.setPinchMax(dto.getPinchMax());
-        result.setPalmMax(dto.getPalmMax());
+
+        result.setPinchMaxD1(dto.getPinchMaxD1());
+        result.setPinchMaxD2(dto.getPinchMaxD2());
+        result.setPinchMaxD3(dto.getPinchMaxD3());
+        result.setPinchMaxD4(dto.getPinchMaxD4());
+        result.setPinchMaxE1(dto.getPinchMaxE1());
+        result.setPinchMaxE2(dto.getPinchMaxE2());
+        result.setPinchMaxE3(dto.getPinchMaxE3());
+        result.setPinchMaxE4(dto.getPinchMaxE4());
+
+        result.setPalmMaxD(dto.getPalmMaxD());
+        result.setPalmMaxE(dto.getPalmMaxE());
+
         result.setExamDate(dto.getExamDate());
 
         return new ResultResponseDTO(resultRepository.save(result));
