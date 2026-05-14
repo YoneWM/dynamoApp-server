@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/api/passwordReset")
+@RequestMapping("/api/token")
 public class PasswordResetController {
     private static final Logger logger = Logger.getLogger(PasswordResetController.class.getName());
 
