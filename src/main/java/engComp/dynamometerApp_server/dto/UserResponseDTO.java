@@ -15,6 +15,7 @@ public class UserResponseDTO {
     private Double peso;
     private String genero;
     private Integer altura;
+    private String maoDominante;
     private String inativo;
     private LocalDateTime dataExclusao;
 
@@ -28,6 +29,7 @@ public class UserResponseDTO {
         this.peso = user.getPeso();
         this.genero = user.getGenero();
         this.altura = user.getAltura();
+        this.maoDominante = user.getMaoDominante();
         this.inativo = user.getInativo();
         this.dataExclusao = user.getDataExclusao();
     }
@@ -41,6 +43,7 @@ public class UserResponseDTO {
     public Double getPeso() { return peso; }
     public String getGenero() { return genero; }
     public Integer getAltura() { return altura; }
+    public String getMaoDominante() { return maoDominante; }
     public String getInativo() { return inativo; }
     public LocalDateTime getDataExclusao() { return dataExclusao; }
 }

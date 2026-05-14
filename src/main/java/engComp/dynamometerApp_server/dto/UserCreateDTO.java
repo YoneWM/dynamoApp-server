@@ -33,6 +33,9 @@ public class UserCreateDTO {
     @NotNull(message = "Altura obrigatória")
     private Integer altura;
 
+    @NotBlank(message = "Mão dominante obrigatória")
+    private String maoDominante;
+
     private String inativo;
     private LocalDateTime dataExclusao;
 
@@ -60,6 +63,9 @@ public class UserCreateDTO {
 
     public Integer getAltura() { return altura; }
     public void setAltura(Integer altura) { this.altura = altura; }
+
+    public String getMaoDominante() { return maoDominante; }
+    public void setMaoDominante(String maoDominante){ this.maoDominante = maoDominante; }
 
     public LocalDateTime getDataExclusao() { return dataExclusao; }
     public void setDataExclusao(LocalDateTime dataExclusao) { this.dataExclusao = dataExclusao; }

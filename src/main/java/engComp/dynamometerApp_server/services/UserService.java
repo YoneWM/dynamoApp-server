@@ -53,6 +53,7 @@ public class UserService {
         user.setAltura(dto.getAltura());
         user.setPeso(dto.getPeso());
         user.setGenero(dto.getGenero());
+        user.setMaoDominante(dto.getMaoDominante());
         user.setInativo(null);
         user.setDataExclusao(null);
 
@@ -96,6 +97,7 @@ public class UserService {
         if (dto.getPeso() != null)           user.setPeso(dto.getPeso());
         if (dto.getGenero() != null)         user.setGenero(dto.getGenero());
         if (dto.getAltura() != null)         user.setAltura(dto.getAltura());
+        if (dto.getMaoDominante() != null)   user.setMaoDominante(dto.getMaoDominante());
 
         return Optional.of(new UserResponseDTO(userRepository.save(user)));
     }

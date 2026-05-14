@@ -36,6 +36,9 @@ public class User {
     @Column(name = "altura",nullable = false)
     private int altura;
 
+    @Column(name = "maoDominante", nullable = false)
+    private String maoDominante;
+
     @Column(name = "inativo")
     private String inativo;
 
@@ -100,6 +103,14 @@ public class User {
 
     public void setAltura(int altura) {
         this.altura = altura;
+    }
+
+    public String getMaoDominante() {
+        return maoDominante;
+    }
+
+    public void setMaoDominante(String maoDominante) {
+        this.maoDominante = maoDominante;
     }
 
     public String getGenero() {
